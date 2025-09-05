@@ -1,11 +1,10 @@
 import "./App.css";
-import { Button } from "@/components/ui/button"
+import LoginPage from "./app/login/page";
 
 function App() {
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center">
-      Ripple Notes
-      <Button>Click me</Button>
+    <div className="min-h-screen bg-muted">
+      <LoginPage />
     </div>
   );
 }
