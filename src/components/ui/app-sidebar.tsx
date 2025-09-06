@@ -21,19 +21,28 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { NavUser } from "../ui/nav-user"
 
-// dynamic lists
+// --- Menu Config (can be fetched from API later) ---
 const notesMenu = [
   { title: "All Notes", icon: NotebookText },
   { title: "Starred", icon: Star },
   { title: "Archive", icon: Archive },
 ]
 
+/**
+ * Ideally, projects would come from your backend:
+ * const { data: projects } = useQuery(["projects"], fetchProjects)
+ */
 const projectsMenu = [
   { title: "Project A", icon: Folder },
   { title: "Project B", icon: Folder },
 ]
 
+/**
+ * Main sidebar component.
+ * Collapsible variant works with <SidebarProvider> wrapping your layout.
+ */
 export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
+  // user object will usually be populated from your auth context or API
   const user = {
     name: "Arunabha Jana",
     email: "arunabha@example.com",
@@ -42,7 +51,7 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
 
   return (
     <Sidebar collapsible="icon" {...props}>
-      {/* Brand */}
+      {/* Brand / Logo */}
       <SidebarHeader>
         <div className="flex items-center gap-2 px-3 py-2">
           <div className="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-md">
@@ -55,14 +64,15 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent className="px-2 py-4">
         {/* Notes section */}
         <div className="space-y-1">
-          {notesMenu.map((item) => (
+          {notesMenu.map(({ title, icon: Icon }) => (
             <Button
-              key={item.title}
+              key={title}
               variant="ghost"
               className="w-full justify-start gap-2"
+              // onClick={() => router.push(...)} // hook up routing later
             >
-              <item.icon className="h-4 w-4" />
-              {item.title}
+              <Icon className="h-4 w-4" />
+              {title}
             </Button>
           ))}
         </div>
@@ -74,28 +84,32 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
           <h4 className="px-2 text-xs font-medium text-muted-foreground">
             Projects
           </h4>
-          {projectsMenu.map((item) => (
+          {projectsMenu.map(({ title, icon: Icon }) => (
             <Button
-              key={item.title}
+              key={title}
               variant="ghost"
               className="w-full justify-start gap-2"
+              // onClick={() => openProject(title)}
             >
-              <item.icon className="h-4 w-4" />
-              {item.title}
+              <Icon className="h-4 w-4" />
+              {title}
             </Button>
           ))}
-          {/* Add project */}
+
+          {/* Buttons to add items */}
           <Button
             variant="outline"
             className="w-full justify-start gap-2 mt-3"
+            // onClick={handleNewProject}
           >
             <Folder className="h-4 w-4" />
             New Project
           </Button>
-          {/* Add note */}
+
           <Button
             variant="default"
             className="w-full justify-start gap-2 mt-2"
+            // onClick={handleNewNote}
           >
             <PlusCircle className="h-4 w-4" />
             New Note
@@ -104,6 +118,7 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
 
       <SidebarFooter className="p-2">
+        {/* User dropdown with indicator */}
         <NavUser user={user} />
       </SidebarFooter>
 
