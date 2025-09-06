@@ -4,6 +4,7 @@ import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "../../components/ui/app-sidebar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { CommandBar } from "@/components/ui/command-bar"
 import {
   Card,
   CardContent,
@@ -81,6 +82,7 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+      <CommandBar />
     </SidebarProvider>
   )
 }
