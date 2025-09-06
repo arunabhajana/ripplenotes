@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 
 import LoginPage from "./app/login/page";
 import RegisterPage from "./app/register/page";
+import DashboardPage from "./app/dashboard/page";
 
 function App() {
   return (
@@ -10,9 +11,10 @@ function App() {
       <div className="min-h-screen bg-muted">
         <Routes>
           {/* Default route goes to login */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
         </Routes>
       </div>
     </Router>
