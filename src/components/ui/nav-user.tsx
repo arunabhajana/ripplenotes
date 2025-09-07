@@ -6,6 +6,7 @@ import {
   IconLogout,
   IconNotification,
   IconUserCircle,
+  IconSparkles,
 } from "@tabler/icons-react"
 
 import {
@@ -37,19 +38,23 @@ type NavUserProps = {
   }
 }
 
-/**
- * User profile dropdown inside sidebar footer.
- * Accepts `user` prop (from auth context or API).
- */
 export function NavUser({ user }: NavUserProps) {
   const { isMobile } = useSidebar()
+
+  // Handlers – replace with API calls when backend is ready
+  const handleUpgrade = () => {
+    alert("Redirect to Pro plan page")
+  }
+
+  const handleLogout = () => {
+    alert("Logging out...")
+  }
 
   return (
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            {/* The clickable row in the sidebar */}
             <SidebarMenuButton
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
@@ -60,24 +65,25 @@ export function NavUser({ user }: NavUserProps) {
                   {user.name.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
+
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
                 <span className="text-muted-foreground truncate text-xs">
                   {user.email}
                 </span>
               </div>
-              {/* Three dots indicator for dropdown */}
+
               <IconDotsVertical className="ml-auto h-4 w-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
 
-          {/* Dropdown menu */}
           <DropdownMenuContent
             className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-56 rounded-lg"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
           >
+            {/* User info preview */}
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
@@ -98,23 +104,30 @@ export function NavUser({ user }: NavUserProps) {
             <DropdownMenuSeparator />
 
             <DropdownMenuGroup>
-              <DropdownMenuItem /* onClick={() => router.push('/account')} */>
+              <DropdownMenuItem>
                 <IconUserCircle className="mr-2 h-4 w-4" />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem /* onClick={() => router.push('/billing')} */>
+              <DropdownMenuItem>
                 <IconCreditCard className="mr-2 h-4 w-4" />
                 Billing
               </DropdownMenuItem>
-              <DropdownMenuItem /* onClick={() => router.push('/notifications')} */>
+              <DropdownMenuItem>
                 <IconNotification className="mr-2 h-4 w-4" />
                 Notifications
+              </DropdownMenuItem>
+
+              <DropdownMenuItem onClick={handleUpgrade} className="cursor-pointer">
+                <IconSparkles className="mr-2 h-4 w-4 text-purple-600" />
+                <span className="bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 bg-clip-text text-transparent">
+                  Upgrade to Pro
+                </span>
               </DropdownMenuItem>
             </DropdownMenuGroup>
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem /* onClick={handleLogout} */>
+            <DropdownMenuItem onClick={handleLogout}>
               <IconLogout className="mr-2 h-4 w-4" />
               Log out
             </DropdownMenuItem>
