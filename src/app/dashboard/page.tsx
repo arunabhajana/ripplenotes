@@ -1,18 +1,72 @@
 "use client"
 
+import { useState } from "react"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "../../components/ui/app-sidebar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { CommandBar } from "@/components/ui/command-bar"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardHeader, CardTitle } from "@/components/ui/card"
+import { NotePreview } from "../../components/ui/note-preview"
+
+interface Note {
+  id: number
+  title: string
+  content: string
+  tags?: string[]
+  project?: string
+}
 
 export default function DashboardPage() {
+  const [notes, setNotes] = useState<Note[]>([
+    { 
+      id: 1, 
+      title: "Meeting notes", 
+      content: "Discuss project timeline and deliverables.", 
+      project: "Work", 
+      tags: ["meeting", "planning"] 
+    },
+    { 
+      id: 2, 
+      title: "Shopping list", 
+      content: "Milk, Eggs, Bread, Coffee.", 
+      project: "Personal", 
+      tags: ["groceries"] 
+    },
+    { 
+      id: 3, 
+      title: "Project A ideas", 
+      content: "Brainstorm AI-powered note-taking features.", 
+      project: "Project A", 
+      tags: ["ideas", "AI", "notes-app"] 
+    },
+  ])
+
+  const [selectedNote, setSelectedNote] = useState<Note | null>(notes[0])
+
+  const addNote = () => {
+    const newNote: Note = {
+      id: Date.now(),
+      title: "Untitled Note",
+      content: "Start writing here...",
+      project: "General",
+      tags: ["draft"],
+    }
+    setNotes([newNote, ...notes])
+    setSelectedNote(newNote)
+  }
+
+  const updateNote = (updated: Note) => {
+    setNotes(notes.map((n) => (n.id === updated.id ? updated : n)))
+    setSelectedNote(updated)
+  }
+
+  const deleteNote = (id: number) => {
+    const filtered = notes.filter((n) => n.id !== id)
+    setNotes(filtered)
+    setSelectedNote(filtered[0] || null)
+  }
+
   return (
     <SidebarProvider>
       <div className="flex h-screen w-full bg-background">
@@ -26,7 +80,7 @@ export default function DashboardPage() {
             {/* Sticky header */}
             <div className="sticky top-0 z-10 bg-muted/30 backdrop-blur-sm border-b px-4 py-3 flex items-center justify-between">
               <h2 className="text-base font-semibold">My Notes</h2>
-              <Button size="sm">+ New</Button>
+              <Button size="sm" onClick={addNote}>+ New</Button>
             </div>
 
             {/* Search */}
@@ -36,49 +90,33 @@ export default function DashboardPage() {
 
             {/* Notes list */}
             <div className="flex-1 overflow-y-auto p-4 space-y-2">
-              {["Meeting notes", "Shopping list", "Project A ideas"].map(
-                (title, idx) => (
-                  <Card
-                    key={idx}
-                    className="cursor-pointer rounded-lg border hover:bg-accent hover:text-accent-foreground transition"
-                  >
-                    <CardHeader className="p-3">
-                      <CardTitle className="text-sm font-medium">
-                        {title}
-                      </CardTitle>
-                    </CardHeader>
-                  </Card>
-                )
-              )}
+              {notes.map((note) => (
+                <Card
+                  key={note.id}
+                  className={`cursor-pointer rounded-lg border transition ${
+                    selectedNote?.id === note.id
+                      ? "bg-accent text-accent-foreground"
+                      : "hover:bg-accent hover:text-accent-foreground"
+                  }`}
+                  onClick={() => setSelectedNote(note)}
+                >
+                  <CardHeader className="p-3">
+                    <CardTitle className="text-sm font-medium truncate">
+                      {note.title}
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+              ))}
             </div>
           </div>
 
           {/* Preview/editor pane */}
-          <div className="flex-1 flex flex-col overflow-hidden">
-            {/* Header */}
-            <div className="sticky top-0 z-10 bg-background backdrop-blur-sm border-b px-6 py-4">
-              <h2 className="text-xl font-semibold">Preview</h2>
-            </div>
-
-            {/* Content */}
-            <div className="flex-1 overflow-y-auto p-6">
-              <Card className="border rounded-lg">
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold">
-                    Selected Note Title
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    Here is where the note content will appear. You can turn
-                    this area into a markdown preview, rich text editor, or any
-                    editor of your choice. This pane stretches to fill the
-                    viewport height and scrolls independently from the notes
-                    list.
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
+          <div className="flex-1 flex flex-col overflow-hidden p-6">
+            <NotePreview
+              note={selectedNote}
+              onUpdate={updateNote}
+              onDelete={deleteNote}
+            />
           </div>
         </div>
       </div>
