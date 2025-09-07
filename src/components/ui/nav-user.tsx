@@ -30,6 +30,18 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+
 type NavUserProps = {
   user: {
     name: string
@@ -47,7 +59,7 @@ export function NavUser({ user }: NavUserProps) {
   }
 
   const handleLogout = () => {
-    alert("Logging out...")
+    alert("Logging out...") // Replace with backend logout call
   }
 
   return (
@@ -127,10 +139,32 @@ export function NavUser({ user }: NavUserProps) {
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem onClick={handleLogout}>
-              <IconLogout className="mr-2 h-4 w-4" />
-              Log out
-            </DropdownMenuItem>
+            {/* Logout with AlertDialog */}
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onSelect={(e) => e.preventDefault()} // Keep dialog open
+                >
+                  <IconLogout className="mr-2 h-4 w-4" />
+                  Log out
+                </DropdownMenuItem>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will log you out of your account.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleLogout}>
+                    Log out
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
