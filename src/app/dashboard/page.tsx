@@ -6,6 +6,7 @@ import { AppSidebar } from "../../components/ui/app-sidebar"
 import { CommandBar } from "@/components/ui/command-bar"
 import { NotePreview } from "../../components/ui/note-preview"
 import { NotesPane } from "../../components/ui/notes-pane"
+import { NewNoteModal } from "../../components/ui/new-note-modal"
 
 interface Note {
   id: number
@@ -16,63 +17,32 @@ interface Note {
 }
 
 export default function DashboardPage() {
-  // Sample notes; later fetch from backend
   const [notes, setNotes] = useState<Note[]>([
-    { 
-      id: 1, 
-      title: "Meeting notes", 
-      content: "Discuss project timeline and deliverables.", 
-      project: "Work", 
-      tags: ["meeting", "planning"] 
-    },
-    { 
-      id: 2, 
-      title: "Shopping list", 
-      content: "Milk, Eggs, Bread, Coffee.", 
-      project: "Personal", 
-      tags: ["groceries"] 
-    },
-    { 
-      id: 3, 
-      title: "Project A ideas", 
-      content: "Brainstorm AI-powered note-taking features.", 
-      project: "Project A", 
-      tags: ["ideas", "AI", "notes-app"] 
-    },
+    { id: 1, title: "Meeting notes", content: "Discuss project timeline and deliverables.", project: "Work", tags: ["meeting", "planning"] },
+    { id: 2, title: "Shopping list", content: "Milk, Eggs, Bread, Coffee.", project: "Personal", tags: ["groceries"] },
+    { id: 3, title: "Project A ideas", content: "Brainstorm AI-powered note-taking features.", project: "Project A", tags: ["ideas", "AI", "notes-app"] },
   ])
 
   const [selectedNote, setSelectedNote] = useState<Note | null>(notes[0])
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
-  // Add a new note
-  const addNote = () => {
-    const newNote: Note = {
-      id: Date.now(),
-      title: "Untitled Note",
-      content: "Start writing here...",
-      project: "General",
-      tags: ["draft"],
-    }
+  // Save new note
+  const handleSaveNote = (newNote: Note) => {
     setNotes([newNote, ...notes])
     setSelectedNote(newNote)
-
-    // 🔗 Later: call backend API to create new note
   }
 
-  // Update an existing note
+  // Update note
   const updateNote = (updated: Note) => {
     setNotes(notes.map((n) => (n.id === updated.id ? updated : n)))
     setSelectedNote(updated)
-
-    // 🔗 Later: call backend API to update note
   }
 
-  // Delete a note
+  // Delete note
   const deleteNote = (id: number) => {
     const filtered = notes.filter((n) => n.id !== id)
     setNotes(filtered)
     setSelectedNote(filtered[0] || null)
-
-    // 🔗 Later: call backend API to delete note
   }
 
   return (
@@ -88,10 +58,10 @@ export default function DashboardPage() {
             notes={notes}
             selectedNote={selectedNote}
             onSelectNote={setSelectedNote}
-            onAddNote={addNote}
+            onAddNote={() => setIsModalOpen(true)}
           />
 
-          {/* Note preview / editor pane */}
+          {/* Note preview / editor */}
           <div className="flex-1 flex flex-col overflow-hidden p-6">
             <NotePreview
               note={selectedNote}
@@ -103,6 +73,13 @@ export default function DashboardPage() {
       </div>
 
       <CommandBar />
+
+      {/* New Note Modal */}
+      <NewNoteModal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSaveNote}
+      />
     </SidebarProvider>
   )
 }
